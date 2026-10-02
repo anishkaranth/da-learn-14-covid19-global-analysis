@@ -1,0 +1,7 @@
+country_key,iso_code,location,continent,population,gdp_per_capita,median_age,aged_65_older,life_expectancy,hospital_beds_per_thousand,pop_1m_plus_flag
+30,BRA,Brazil,South America,215313504,14103.45,33.5,8.55,75.88,2.2,1
+74,GBR,United Kingdom,Europe,67508936,39753.24,40.8,18.52,81.32,2.54,1
+98,IND,India,Asia,1417173120,6426.67,28.2,5.99,69.66,0.53,1
+108,JPN,Japan,Asia,123951696,39002.22,48.2,27.05,84.63,13.05,1
+225,USA,United States,North America,338289856,54225.45,38.3,15.41,78.86,2.77,1
+237,ZAF,South Africa,Africa,59893884,12294.88,27.3,5.34,64.13,2.32,1
