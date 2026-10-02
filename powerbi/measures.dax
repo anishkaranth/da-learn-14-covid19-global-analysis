@@ -1,30 +1,23 @@
 -- Power BI measures for da-learn-14 (tables: fact_covid_daily, fact_country_month, dim_country, dim_date)
 
-New Cases = SUM ( fact_covid_daily[new_cases] )
-New Deaths = SUM ( fact_covid_daily[new_deaths] )
+New Cases = SUM ( fact_country_month[new_cases] )
+New Deaths = SUM ( fact_country_month[new_deaths] )
 CFR % = DIVIDE ( [New Deaths], [New Cases] )
-Countries = DISTINCTCOUNT ( fact_covid_daily[country_key] )
-
--- Population of the countries in the current filter context
-Population = SUMX ( VALUES ( dim_country[country_key] ), CALCULATE ( MAX ( dim_country[population] ) ) )
+Population = SUM ( dim_country[population] )
 Deaths per Million = DIVIDE ( [New Deaths], [Population] ) * 1000000
 Cases per Million = DIVIDE ( [New Cases], [Population] ) * 1000000
 
--- Cumulative stocks: latest non-blank value per country, then summed across countries
-Latest People Vaccinated =
+-- Stocks: take the latest month-end value per country, then sum across countries
+People Vaccinated (latest) =
     SUMX ( VALUES ( dim_country[country_key] ),
-        CALCULATE ( MAX ( fact_covid_daily[people_vaccinated] ) ) )
-Pct Vaccinated (>=1 dose) = DIVIDE ( [Latest People Vaccinated], [Population] )
-Latest Deaths =
-    SUMX ( VALUES ( dim_country[country_key] ), CALCULATE ( MAX ( fact_covid_daily[total_deaths] ) ) )
-
--- Monthly table (fact_country_month)
-Monthly Deaths = SUM ( fact_country_month[new_deaths] )
-Monthly Cases = SUM ( fact_country_month[new_cases] )
-Monthly CFR % = DIVIDE ( [Monthly Deaths], [Monthly Cases] )
+        CALCULATE ( MAX ( fact_country_month[people_vaccinated_eom] ) ) )
+Vaccinated % = DIVIDE ( [People Vaccinated (latest)],
+    CALCULATE ( [Population], FILTER ( dim_country, CALCULATE ( MAX ( fact_country_month[people_vaccinated_eom] ) ) > 0 ) ) )
 Avg Stringency = AVERAGE ( fact_country_month[avg_stringency] )
 
--- Time intelligence (needs dim_date marked as a date table on full_date)
-Deaths 7d Avg = AVERAGEX ( DATESINPERIOD ( dim_date[full_date], MAX ( dim_date[full_date] ), -7, DAY ), [New Deaths] )
-Deaths YTD = TOTALYTD ( [New Deaths], dim_date[full_date] )
-Peak Month Deaths = MAXX ( VALUES ( fact_country_month[year_month] ), [Monthly Deaths] )
+-- Daily table (sample = India, Apr-May 2021)
+Daily New Cases = SUM ( fact_covid_daily[new_cases] )
+Daily New Deaths = SUM ( fact_covid_daily[new_deaths] )
+Cases 7d Avg =
+    AVERAGEX ( DATESINPERIOD ( dim_date[full_date], MAX ( dim_date[full_date] ), -7, DAY ), [Daily New Cases] )
+Cumulative Deaths = MAX ( fact_covid_daily[total_deaths] )

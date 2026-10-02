@@ -1,10 +1,9 @@
 # Build guide (Power BI Desktop)
 
-1. **Get data.** Use Get data → Text/CSV and load the four files in `powerbi/data/`. For the full data, first run `python scripts/download_full_data.py && python run_pipeline.py --source full`, then load the same four tables from `data/clean_full/star/`.
-2. **Types.** In Power Query, set `obs_date` and `full_date` to Date, the `*_key`, `year_month`, case, death and vaccination columns to Whole number, `stringency_index`, `gdp_per_capita` and `median_age` to Decimal, and everything else to Text.
-3. **Date table.** Mark `dim_date` as a date table on `full_date`.
-4. **Relationships.** Create them as listed in [model.md](model.md), all single direction from dim to fact.
-5. **Measures.** Create a blank `_Measures` table and paste each measure from [measures.dax](measures.dax). Format CFR % and Pct Vaccinated as percentages with 2 decimals, and the per-million measures with 1 decimal.
-6. **Report.** Build the three pages in [dashboard_spec.md](dashboard_spec.md). Use one accent colour (#1f6f8b) to match `results/charts/dashboard.svg`.
-7. **Check.** On the full data the cards should show the expected values listed at the end of the spec. On the sample CSVs (6 countries, 2021) the numbers will differ.
-8. Save the .pbix locally. It is not committed, because it needs Windows.
+1. **Get data.** Use Get data → Text/CSV and load the 4 files in `powerbi/data/`. For the full model, load `data/clean_full/star/` after running the full pipeline.
+2. **Types.** Set `full_date` and `obs_date` to Date. Set the `*_key`, year_month, counts and population columns to Whole number. Set the rates, stringency and age columns to Decimal.
+3. **Relationships.** Create them as listed in [model.md](model.md). Optionally add the `Month` table described there.
+4. **Measures.** Paste the measures from [measures.dax](measures.dax) into a `_Measures` table. Format CFR % and Vaccinated % as percentages, and Deaths per Million as a whole number.
+5. **Pages.** Build the pages in [dashboard_spec.md](dashboard_spec.md), using accent colour #1f6f8b to match `results/charts/dashboard.svg`.
+6. **Validate.** On the full data, the cards must match the expected values in the spec.
+7. Save the .pbix locally. It is not committed, because it needs Windows.
